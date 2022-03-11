@@ -40,7 +40,7 @@ class FarmerApiController extends Controller
             'reg_village' => ['required'],
             'reg_district' => ['required'],
             'reg_block' => [],
-            'reg_email' => ['required', 'string', 'email', 'max:255', 'unique:farmers'],
+            'reg_email' => ['required', 'string', 'email', 'max:255',],
             'reg_pwd' => ['required'],
             'reg_sec_qs1' => ['required'],
             'reg_sec_ans1' => ['required'],
@@ -49,10 +49,10 @@ class FarmerApiController extends Controller
             'user_type' => ['required'],
         ]);
 
-        $security_question[] = $request->reg_sec_qs1;
-        $security_question[] = $request->reg_sec_qs2;
-        $security_answer[] = $request->reg_sec_ans1;
-        $security_answer[] = $request->reg_sec_ans2;
+        (isset($request->reg_sec_qs1)) ? $security_question[] = $request->reg_sec_qs1 : '';
+        (isset($request->reg_sec_qs2)) ? $security_question[] =  $request->reg_sec_qs2 : '';
+        (isset($request->reg_sec_ans1)) ? $security_answer[] =  $request->reg_sec_ans1 : '';
+        (isset($request->reg_sec_ans2)) ? $security_answer[] = $request->reg_sec_ans2 : '';
 
         $farmer = Farmer::create([
             'name' => $request->owner_name,
@@ -65,12 +65,18 @@ class FarmerApiController extends Controller
             'district' => $request->reg_district,
             'block' => $request->reg_block,
             'email' => $request->reg_email,
-            'password' => Hash::make($request->password),
-            'security_question' => serialize($security_question),
-            'security_answer' => serialize($security_answer),
+            'password' => isset($request->reg_pwd) ? Hash::make($request->reg_pwd) : NULL,
+            'security_question' => (!empty($security_question)) ? serialize($security_question) : NULL,
+            'security_answer' => (!empty($security_answer)) ? serialize($security_answer) : NULL,
         ]);
 
         $farmer->save();
+
+        // Creating a token without scopes...
+        $token = $farmer->createToken('Farmer Register Access Token')->accessToken;
+
+        //return the access token 
+        return response()->json(['token'=>$token],200);
     }
 
 }

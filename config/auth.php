@@ -42,8 +42,13 @@ return [
         ],
         'api' => [
             'driver' => 'passport',
-            'provider' => 'users',
+            'provider' => 'farmers',
         ],
+        'farmer' => [
+            'driver' => 'session',
+            'provider' => 'farmers',
+        ],
+
     ],
 
     /*
@@ -68,6 +73,11 @@ return [
             'driver' => 'eloquent',
             'model' => App\Models\User::class,
         ],
+        'farmers' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Farmer::class,
+            //'table' => 'farmers',
+        ]
 
         // 'users' => [
         //     'driver' => 'database',

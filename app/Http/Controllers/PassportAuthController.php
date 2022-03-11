@@ -5,24 +5,12 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\Farmer;
 use Auth;
 
 
 class PassportAuthController extends Controller
 {
-     /**
-     * handle user registration request
-     */
-    public function register(Request $request){
-        
-        $user = User::find(2);
-
-        // Creating a token without scopes...
-        $token = $user->createToken('Token Name')->accessToken;
-
-        //return the access token 
-        return response()->json(['token'=>$token],200);
-    }
 
      /**
      * Login api
@@ -31,9 +19,10 @@ class PassportAuthController extends Controller
      */
     public function login(Request $request)
     {
-        if(Auth::attempt(['email' => $request->email, 'password' => $request->password])){ 
-            $user = Auth::user(); 
-            $success['token'] =  $user->createToken('MyApp')-> accessToken; 
+        if(Auth::guard('farmer')->attempt(['email' => $request->email, 'password' => $request->password])){
+
+            $user = Auth::guard('farmer')->user(); 
+            $success['token'] =  $user->createToken('Farmer Login Access Token')-> accessToken; 
             $success['name'] =  $user->name;
             $success['id'] =  $user->id;
             $success['age'] =  $user->age;

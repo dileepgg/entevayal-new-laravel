@@ -3,10 +3,16 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use Laravel\Passport\HasApiTokens;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class Farmer extends Model
+class Farmer extends Authenticatable
 {
+    use HasApiTokens, HasFactory;
+
+    protected $table = 'farmers'; 
+
+    protected $primaryKey = 'farmer_id';
 
     /**
      * The attributes that are mass assignable.
@@ -28,6 +34,10 @@ class Farmer extends Model
         'village'
     ];
 
+    protected $hidden = [
+        'password',
+    ];
+
     /**
      * The attributes that should be cast.
      *
@@ -37,4 +47,5 @@ class Farmer extends Model
         'created_at' => 'datetime',
         'updated_at' => 'datetime'
     ];
+
 }
